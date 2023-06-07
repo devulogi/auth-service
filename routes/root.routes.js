@@ -9,7 +9,7 @@ const { loginController } = require('../controllers/login.controller');
 const { revokeController } = require('../controllers/revoke.controller');
 const { logoutController } = require('../controllers/logout.controller');
 const { flushTokensController } = require('../controllers/flushtokens.controller');
-const { ensureAuthenticated, CustomError } = require('../helpers');
+const { ensureAuthenticated } = require('../helpers');
 
 router.post('/register', registerController);
 router.post('/login', loginController);
