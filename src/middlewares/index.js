@@ -1,16 +1,32 @@
 const { passport } = require('../services/passport');
 const { redisClient } = require('../services/redis');
 
-class CustomError extends Error {
-  constructor({ message, hint, statusCode = 500, info = null }) {
-    super(message);
-    this.hint = hint;
-    this.statusCode = statusCode;
-    this.info = info;
-  }
-}
+const errorHandler = (err, req, res, next) => {
+  res.status(err.statusCode || 500).send({
+    description: err.message || 'Internal server error',
+    hint: err.hint || 'Please contact the administrator',
+    metadata: {
+      timestamp: new Date().toISOString(),
+      request: {
+        method: req.method,
+        url: req.originalUrl,
+        payload: req.body
+      }
+    },
+    error: {
+      info: err.info || null,
+      stack: err.stack,
+    }
+  });
+};
+const notFoundHandler = (req, res) => {
+  res.status(404).send({
+    error: 'Not found',
+    alert: 'The requested resource was not found'
+  });
+};
 
-function ensureAuthenticated(req, res, next) {
+const ensureAuthenticated = (req, res, next) => {
   passport.authenticate('jwt', { session: false }, async (err, user, info) => {
     const token = req.headers.authorization?.split(' ')[1];
 
@@ -62,4 +78,4 @@ function ensureAuthenticated(req, res, next) {
   })(req, res, next);
 }
 
-module.exports = { ensureAuthenticated, CustomError };
+module.exports = { errorHandler, notFoundHandler, ensureAuthenticated };
