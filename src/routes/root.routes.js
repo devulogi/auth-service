@@ -1,6 +1,3 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-
 const router = require('express').Router();
 
 const { refreshController } = require('../controllers/refresh.controller');
@@ -9,7 +6,7 @@ const { loginController } = require('../controllers/login.controller');
 const { revokeController } = require('../controllers/revoke.controller');
 const { logoutController } = require('../controllers/logout.controller');
 const { flushTokensController } = require('../controllers/flushtokens.controller');
-const { ensureAuthenticated } = require('../helpers');
+const { ensureAuthenticated } = require('../middlewares');
 
 router.post('/register', registerController);
 router.post('/login', loginController);
